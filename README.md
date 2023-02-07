@@ -11,7 +11,7 @@ When running Train.py, the default hyper-parameters would be transported into it
 
 1. Prepare Datasets
 
-    1). Convert .root file to .npy file: 
+    1). Convert *.root file to *.npy file: 
 
         cd MakeDataSets
         python MakeTrainSets.py
