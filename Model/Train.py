@@ -220,7 +220,7 @@ if __name__ == '__main__':
     plt.ylabel('loss value')
     plt.xlabel('Iteration')
     plt.savefig(loss_path)
-    # plt.show()
+
 
     # save model
     torch.save(net.state_dict(), model_path)
