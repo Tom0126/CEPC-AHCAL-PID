@@ -146,33 +146,33 @@ def plotDistribution(mu_path, e_path, pi_path, log, stack, save_path, n_classes=
 
     ####################################
     #   proton
+    if n_classes==4:
+        fig = plt.figure(figsize=(6, 5))
 
-    fig = plt.figure(figsize=(6, 5))
+        if log:
+            plt.text(10, 0.28, 'CEPC Preliminary', fontsize=15, fontstyle='oblique', fontweight='bold')
+            plt.text(10, 0.14, 'AHCAL PID', fontsize=12, fontstyle='normal')
+            plt.text(10, 0.07, 'Proton Events', fontsize=12, fontstyle='normal')
+        else:
+            plt.text(10, 0.9, 'CEPC Preliminary', fontsize=15, fontstyle='oblique', fontweight='bold')
+            plt.text(10, 0.84, 'AHCAL PID', fontsize=12, fontstyle='normal')
+            plt.text(10, 0.78, 'Proton Events', fontsize=12, fontstyle='normal')
 
-    if log:
-        plt.text(10, 0.28, 'CEPC Preliminary', fontsize=15, fontstyle='oblique', fontweight='bold')
-        plt.text(10, 0.14, 'AHCAL PID', fontsize=12, fontstyle='normal')
-        plt.text(10, 0.07, 'Proton Events', fontsize=12, fontstyle='normal')
-    else:
-        plt.text(10, 0.9, 'CEPC Preliminary', fontsize=15, fontstyle='oblique', fontweight='bold')
-        plt.text(10, 0.84, 'AHCAL PID', fontsize=12, fontstyle='normal')
-        plt.text(10, 0.78, 'Proton Events', fontsize=12, fontstyle='normal')
-
-    if stack:
-        plt.hist(np.transpose(pi_dis), bins=100, range=(0, 100), density=True
-                 , histtype=hist_stype, label=labels, alpha=0.5, stacked=True,
-                 color=colors, log=log)
-    else:
-        for i, particle in enumerate(labels):
-            plt.hist(proton_dis[i], bins=100, range=(0, 100), density=True, color=colors[i]
-                     , histtype=hist_stype, label=particle, alpha=0.5, log=log, stacked=stack)
-    plt.xlabel('Probability [%]')
-    plt.xticks(np.linspace(0, 100, 11))
-    if not log:
-        plt.ylim([0, 1.1])
-    else:
-        plt.ylim([0.00001, 1])
-    plt.legend(loc='upper right')
-    plt.savefig(save_path.format('proton', log_tag, stack_tag))
-    plt.show()
-    plt.close(fig)
+        if stack:
+            plt.hist(np.transpose(pi_dis), bins=100, range=(0, 100), density=True
+                     , histtype=hist_stype, label=labels, alpha=0.5, stacked=True,
+                     color=colors, log=log)
+        else:
+            for i, particle in enumerate(labels):
+                plt.hist(proton_dis[i], bins=100, range=(0, 100), density=True, color=colors[i]
+                         , histtype=hist_stype, label=particle, alpha=0.5, log=log, stacked=stack)
+        plt.xlabel('Probability [%]')
+        plt.xticks(np.linspace(0, 100, 11))
+        if not log:
+            plt.ylim([0, 1.1])
+        else:
+            plt.ylim([0.00001, 1])
+        plt.legend(loc='upper right')
+        plt.savefig(save_path.format('proton', log_tag, stack_tag))
+        plt.show()
+        plt.close(fig)

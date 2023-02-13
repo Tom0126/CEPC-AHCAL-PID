@@ -336,15 +336,15 @@ def evaluate(root_path, mean, std, n_classes):
 
     # roc
     save_roc_path = os.path.join(fig_dir, 'ann_bdt_compare.png')
-    plotROC(fpr_path=fpr_path, tpr_path=tpr_path, auroc_path=auroc_path, signal='pi+', bdt_path=bdt_path,
+    plotROC(fpr_path=fpr_path, tpr_path=tpr_path, auroc_path=auroc_path, signal='pi+', bdt_path=bdt_path,compare=False,
             save_path=save_roc_path)
 
 
 if __name__ == '__main__':
     args = parser.parse_args()
     # load model
-    root_path = '/lustre/collider/songsiyuan/CEPC/PID/CheckPoint/epoch_300_lr_0.0001_batch_32_mean_0.07_std_1.63_optim_SGD_classes_4'
-    MEAN = 0.07
-    STD = 1.63
-    N_CLASSES = 4
-    evaluate(root_path=root_path, mean=MEAN, std=STD, n_classes=N_CLASSES)
+    root_path = '/lustre/collider/songsiyuan/CEPC/PID/CheckPoint/epoch_300'
+    N_CLASSES = 3
+    mean=args.mean
+    std=args.std
+    evaluate(root_path=root_path, n_classes=N_CLASSES,mean=mean,std=std)

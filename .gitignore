@@ -5,6 +5,7 @@ MakeTrainsets/log
 Evaluate/log
 Model/log
 __MACOSX
+test.py
 *__pycache__*
 *DS_Store*
 

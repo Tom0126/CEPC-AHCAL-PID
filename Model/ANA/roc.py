@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plotROC(fpr_path,tpr_path,auroc_path,bdt_path,signal,save_path):
+def plotROC(fpr_path,tpr_path,auroc_path,bdt_path,signal,save_path, compare=True, bdt_auc=0.995):
     particle_dim={'mu+':0,'e+':1,'pi+':2,'proton':3}
     fprs=np.load(fpr_path, allow_pickle=True)
     tprs=np.load(tpr_path, allow_pickle=True)
@@ -16,7 +16,7 @@ def plotROC(fpr_path,tpr_path,auroc_path,bdt_path,signal,save_path):
 
     plt.figure(figsize=(6, 5))
     plt.plot(tpr,1-fpr,label='ANN',color='red')
-    plt.plot(bdt_result[0], bdt_result[1], label='BDT', color='black')
+
     plt.xlabel('Signal efficiency',fontsize=15)
     plt.ylabel('Background rejection',fontsize=15)
 
@@ -25,8 +25,14 @@ def plotROC(fpr_path,tpr_path,auroc_path,bdt_path,signal,save_path):
     plt.text(0.1, 0.78, '{} Signals'.format(signal), fontsize=12, fontstyle='normal')
     plt.text(0.1, 0.72, 'ANN AUC = {:.3f}'.format(auc), fontsize=12, fontstyle='normal')
 
+    if compare:
+        plt.plot(bdt_result[0], bdt_result[1], label='BDT', color='black')
+        plt.text(0.1, 0.66, 'BDT AUC = {:.3f}'.format(bdt_auc), fontsize=12, fontstyle='normal')
+        compare_tag='_bdt_compare'
+    else:
+        compare_tag=''
     plt.legend()
-    plt.savefig(save_path)
+    plt.savefig(save_path.format(signal,compare_tag))
     plt.show()
 
 if __name__=='__main__':
