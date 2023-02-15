@@ -75,7 +75,7 @@ def plotDistribution(mu_path, e_path, pi_path, log, stack, save_path, n_classes=
         plt.ylim([0.00001, 1])
     plt.legend(loc='upper right')
     plt.savefig(save_path.format('mu', log_tag, stack_tag))
-    plt.show()
+    # plt.show()
     plt.close(fig)
 
     ####################################
@@ -109,7 +109,7 @@ def plotDistribution(mu_path, e_path, pi_path, log, stack, save_path, n_classes=
         plt.ylim([0.00001, 1])
     plt.legend(loc='upper right')
     plt.savefig(save_path.format('e', log_tag, stack_tag))
-    plt.show()
+    # plt.show()
     plt.close(fig)
     ####################################
     #   pion+
@@ -141,7 +141,7 @@ def plotDistribution(mu_path, e_path, pi_path, log, stack, save_path, n_classes=
         plt.ylim([0.00001, 1])
     plt.legend(loc='upper right')
     plt.savefig(save_path.format('pi', log_tag, stack_tag))
-    plt.show()
+    # plt.show()
     plt.close(fig)
 
     ####################################
@@ -174,5 +174,5 @@ def plotDistribution(mu_path, e_path, pi_path, log, stack, save_path, n_classes=
             plt.ylim([0.00001, 1])
         plt.legend(loc='upper right')
         plt.savefig(save_path.format('proton', log_tag, stack_tag))
-        plt.show()
+        # plt.show()
         plt.close(fig)

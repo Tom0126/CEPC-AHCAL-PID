@@ -46,4 +46,5 @@ def plotACC(combi_path, mu_path, e_path, pi_path, save_path, n_classes=3, proton
     plt.xlabel('Energy [GeV]')
     plt.ylabel('Accuracy [%]')
     plt.savefig(save_path)
-    plt.show()
+    plt.close()
+    # plt.show()

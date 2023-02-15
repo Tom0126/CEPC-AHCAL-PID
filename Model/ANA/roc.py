@@ -33,7 +33,7 @@ def plotROC(fpr_path,tpr_path,auroc_path,bdt_path,signal,save_path, compare=True
         compare_tag=''
     plt.legend()
     plt.savefig(save_path.format(signal,compare_tag))
-    plt.show()
+    # plt.show()
 
 if __name__=='__main__':
     fpr_path='../roc/fpr.npy'

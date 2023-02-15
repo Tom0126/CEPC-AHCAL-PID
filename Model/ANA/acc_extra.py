@@ -70,4 +70,5 @@ def plotACCExtra(mu_path, e_path, pi_path, pi_extra_path, e_extra_path, mu_extra
     plt.xlabel('Energy [GeV]')
     plt.ylabel('Accuracy [%]')
     plt.savefig(save_path)
-    plt.show()
+    plt.close()
+    # plt.show()

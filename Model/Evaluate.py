@@ -335,9 +335,13 @@ def evaluate(root_path, mean, std, n_classes):
                              log=log, stack=stack,save_path=save_dis_compare_path, n_classes=n_classes)
 
     # roc
-    save_roc_path = os.path.join(fig_dir, 'ann_bdt_compare.png')
-    plotROC(fpr_path=fpr_path, tpr_path=tpr_path, auroc_path=auroc_path, signal='pi+', bdt_path=bdt_path,compare=False,
-            save_path=save_roc_path)
+    save_roc_path = os.path.join(fig_dir, '{}_roc.png')
+    signals_dict={3:['mu+', 'e+', 'pi+'],
+                          4:['mu+', 'e+', 'pi+', 'proton']}
+    signals=signals_dict.get(n_classes)
+    for signal in signals:
+        plotROC(fpr_path=fpr_path, tpr_path=tpr_path, auroc_path=auroc_path, signal=signal, bdt_path=bdt_path,compare=False,
+            save_path=save_roc_path.format(signal))
 
 
 if __name__ == '__main__':
