@@ -7,7 +7,7 @@ conda activate pytorch
 
 # change hyper-parameters
 
-n_epoch=300
+n_epoch=3
 batch_size=32
 lr=0.001
 mean=0.07

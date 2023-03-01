@@ -51,7 +51,7 @@ OPTIM = args.optim
 N_CLASSES=args.n_classes
 
 # path
-# TO DO
+# TODO
 data_dir_dict={4:'/ahcal_beam_test_mu_e_pi_proton',
            3:'ahcal_testbeam_simu',
           }

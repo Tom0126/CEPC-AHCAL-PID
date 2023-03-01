@@ -35,7 +35,7 @@ class ImageSet(Dataset):
         return len(self.datasets)
 
 def data_loader(img_path, label_path,mean=None,std=None,mean_std_static:bool=False,
-                batch_size:int=32, shuffle:bool=True, num_workers:int=4):
+                batch_size:int=32, shuffle:bool=False, num_workers:int=4):
 
     transforms_train = transforms.Compose([
         transforms.ToTensor(),
@@ -52,6 +52,51 @@ def data_loader(img_path, label_path,mean=None,std=None,mean_std_static:bool=Fal
 
     return loader_train
 
+
+class PIDSet(Dataset):
+    def __init__(self, imgs, mean=0.07068362266069922, std=1.6261502913850978
+                 , mean_std_static=True, transform=None) -> None:
+        super().__init__()
+        # datasets = np.load(img_path)
+        # datasets = datasets.astype(np.float32)
+
+        self.datasets=imgs.astype(np.float32)
+
+        # use the mean&std of the train set
+        if mean_std_static:
+            mean = mean
+            std = std
+        else:
+            mean = np.average(self.datasets)
+            std = np.std(self.datasets)
+
+        self.datasets = (self.datasets - mean) / std
+        self.transform = transform
+
+    def __getitem__(self, index: Any):
+        img = self.datasets[index]
+
+        if self.transform != None:
+            img = self.transform(img)
+
+        return img
+
+    def __len__(self):
+        return len(self.datasets)
+
+
+def pid_data_loader(imgs, mean=0.07068362266069922, std=1.6261502913850978, mean_std_static: bool = True,
+                batch_size: int = 128, shuffle: bool = False, num_workers: int = 0):
+    transforms_train = transforms.Compose([
+        transforms.ToTensor(),
+    ])
+    dataset_pid = PIDSet(imgs,mean=mean, std=std, mean_std_static=mean_std_static,
+                             transform=transforms_train)
+
+    loader_pid = DataLoader(dataset=dataset_pid, batch_size=batch_size,
+                              shuffle=shuffle, num_workers=num_workers, drop_last=False)
+
+    return loader_pid
 
 
 if __name__ == "__main__":
