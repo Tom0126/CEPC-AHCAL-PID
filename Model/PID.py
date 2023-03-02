@@ -3,30 +3,20 @@
 # @Time    : 2023/3/1 22:12
 # @Author  : Tom SONG 
 # @Mail    : xdmyssy@gmail.com
-# @File    : IdentifyParticles.py
+# @File    : PID.py
 # @Software: PyCharm
 
 
 import torch
 import numpy as np
 from Net import lenet
-from Config.config import parser
-import matplotlib.pyplot as plt
 from Data import loader
-import os
 from torch.nn import Softmax
-# from Train import ckp_dir, MEAN, STD
-from ANA.acc import plotACC
-from ANA.acc_extra import plotACCExtra
-from ANA.distribution import plotDistribution
-from ANA.roc import plotROC
-from Config.config import parser
-from torchmetrics.classification import MulticlassROC, MulticlassAUROC
 import uproot
-from Data import ReadRoot
+
+
 
 def readRootFileCell(path):
-
     file = uproot.open(path)
     # get keys
     # print(file.keys())
@@ -42,12 +32,13 @@ def readRootFileCell(path):
     # x = data['Hit_X']
     # y = data['Hit_Y']
     # z = data['Hit_Z']
-    hcal_energy = data['hcal_energy']
-    x = data['hcal_x']
-    y = data['hcal_y']
-    z = data['hcal_z']
+    hcal_energy = data['hcal_celle']
+    x = data['hcal_cellx']
+    y = data['hcal_celly']
+    z = data['hcal_cellz']
 
     return hcal_energy, x, y, z
+
 
 def makeDatasets(file_path):
     '''
@@ -78,7 +69,22 @@ def makeDatasets(file_path):
     # np.save(save_path, depoits)
     return depoits
 
-def PID(file_path, save_path, model_path, particle_type, threshold=0, n_classes=3):
+
+def array2tree(array, save_path):
+    file = uproot.recreate(save_path)
+    file['Calib_Hit'] = {'ANN_PID': array}
+
+
+def readPIDIndex(file_path):
+    file = uproot.open(file_path)
+    tree = file['Calib_Hit']
+
+    tree = tree.arrays(library='numpy')
+    branch=tree['ANN_PID']
+    return branch
+
+
+def PID(file_path, save_path, model_path, threshold=0, n_classes=3):
     '''
     mu+: 0,
     e+: 1,
@@ -100,46 +106,69 @@ def PID(file_path, save_path, model_path, particle_type, threshold=0, n_classes=
     deposits = makeDatasets(file_path)
     events_number = len(deposits)
 
-    pid_loader=loader.pid_data_loader(deposits)
+    pid_loader = loader.pid_data_loader(deposits)
 
+    tags = None
 
-    tags=None
     with torch.no_grad():
         net.eval()
 
         for i, inputs in enumerate(pid_loader):
-            inputs=inputs.to(device)
-            outputs=net(inputs)
+            inputs = inputs.to(device)
+            outputs = net(inputs)
 
             prbs = Softmax(dim=1)(outputs)
 
-            prbs,particles= torch.max(prbs,1)
+            prbs, particles = torch.max(prbs, 1)
 
             if gpu:
-                prbs=prbs.cpu().numpy()
-                particles=particles.cpu().numpy()
+                prbs = prbs.cpu().numpy()
+                particles = particles.cpu().numpy()
             else:
                 prbs = prbs.numpy()
                 particles = particles.numpy()
 
-            threshold_tag = prbs > threshold
-            particle_tag = particles == particle_type
+            batch_size = len(prbs)
 
-            _=np.logical_and(threshold_tag,particle_tag)
+            tag_threshold = prbs > threshold
 
-            if i==0:
-                tags= _
+            _ = np.where(tag_threshold, particles, -1 * np.ones(batch_size))
+
+            if i == 0:
+                tags = _
             else:
-                tags= np.concatenate((tags,_),axis=0)
+                tags = np.concatenate((tags, _), axis=0)
 
-    indexes=np.where(tags)[0]
+    assert len(tags) == events_number
+    tags=tags.astype(np.int32)
 
-    np.savetxt(save_path,indexes)
-
-
-
-
+    array2tree(tags, save_path)
 
 
 if __name__ == '__main__':
-    pass
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    # base setting
+    parser.add_argument("--file_path", type=str, help="root file for PID.")
+    parser.add_argument("--save_path", type=str, help="root file for saving PID results.")
+    parser.add_argument("--model_path", type=str, help="ANN pid model path.")
+    parser.add_argument("--threshold", type=float, help="classification threshold, 0-1.")
+    parser.add_argument("--n_classes", type=str, default=3, help="set n classes.")
+    args = parser.parse_args()
+
+    parameters = {
+        'file_path': args.file_path,
+        'save_path': args.save_path,
+        'model_path': args.model_path,
+        'threshold': args.threshold,
+        'n_classes': args.n_classes,
+    }
+
+    PID(**parameters)
+
+    tags=readPIDIndex(args.save_path)
+
+    import matplotlib.pyplot as plt
+    plt.hist(tags,log=True)
+    plt.savefig('./test.png')

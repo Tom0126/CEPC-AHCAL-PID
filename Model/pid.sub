@@ -1,0 +1,12 @@
+Universe = vanilla
+Executable=./pid.sh
+Arguments  = 1000
+Log    = ./log/log.log
+Output = ./log/log.out
+Error  = ./log/log.err
+request_CPUs = 10
+request_GPUs = 1
++SJTU_GPUModel = "A100_80G"
+
+should_transfer_files = NO
+Queue
