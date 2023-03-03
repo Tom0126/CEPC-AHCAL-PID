@@ -28,14 +28,11 @@ def readRootFileCell(path):
     data = simulation.arrays(library="np")
 
     # e+,x,y,z
-    # hcal_energy = data['Hit_Energy']
-    # x = data['Hit_X']
-    # y = data['Hit_Y']
-    # z = data['Hit_Z']
-    hcal_energy = data['hcal_celle']
-    x = data['hcal_cellx']
-    y = data['hcal_celly']
-    z = data['hcal_cellz']
+    hcal_energy = data['Hit_Energy']
+    x = data['Hit_X']
+    y = data['Hit_Y']
+    z = data['Hit_Z']
+
 
     return hcal_energy, x, y, z
 
@@ -57,7 +54,7 @@ def makeDatasets(file_path):
         energies_ = hcal_energy[i]
         x_ = ((x[i] + 340) / 40).astype(int)
         y_ = ((y[i] + 340) / 40).astype(int)
-        z_ = ((z[i] - 301.5) / 25).astype(int)
+        z_ = ((z[i]) / 26).astype(int)
         num_events_ = len(energies_)
         assert num_events_ == len(x_)
         assert num_events_ == len(y_)
@@ -170,5 +167,5 @@ if __name__ == '__main__':
     tags=readPIDIndex(args.save_path)
 
     import matplotlib.pyplot as plt
-    plt.hist(tags,log=False)
+    plt.hist(tags,log=True)
     plt.savefig('./test.png')
