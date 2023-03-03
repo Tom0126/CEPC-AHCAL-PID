@@ -22,7 +22,7 @@ def readRootFileCell(path):
     # print(file.keys())
 
     # A TTree File
-    simulation = file['T']
+    simulation = file['Calib_Hit']
 
     # Get data->numpy
     data = simulation.arrays(library="np")
@@ -32,7 +32,6 @@ def readRootFileCell(path):
     x = data['Hit_X']
     y = data['Hit_Y']
     z = data['Hit_Z']
-
 
     return hcal_energy, x, y, z
 
@@ -52,8 +51,8 @@ def makeDatasets(file_path):
     depoits = np.zeros((num_events, 18, 18, 40))
     for i in range(num_events):
         energies_ = hcal_energy[i]
-        x_ = ((x[i] + 340) / 40).astype(int)
-        y_ = ((y[i] + 340) / 40).astype(int)
+        x_ = np.around((x[i] + 342.5491) / 40.29964).astype(int)
+        y_ = np.around((y[i] + 343.05494) / 40.29964).astype(int)
         z_ = ((z[i]) / 26).astype(int)
         num_events_ = len(energies_)
         assert num_events_ == len(x_)
@@ -68,20 +67,46 @@ def makeDatasets(file_path):
 
 
 def array2tree(array, save_path):
+
+    array=np.transpose(array)
     file = uproot.recreate(save_path)
-    file['Calib_Hit'] = {'ANN_PID': array}
+    file['Calib_Hit'] = {'ANN_mu_plus': array[0],
+                         'ANN_e_plus': array[1],
+                         'ANN_pi_plus': array[2],
+                         }
 
 
-def readPIDIndex(file_path):
+def readPIDIndex(file_path, threshold=0.9):
     file = uproot.open(file_path)
     tree = file['Calib_Hit']
 
     tree = tree.arrays(library='numpy')
-    branch=tree['ANN_PID']
-    return branch
+    mu_prbs = tree['ANN_mu_plus'].reshape(1,-1)
+    positron_prbs = tree['ANN_e_plus'].reshape(1,-1)
+    pi_prbs=tree['ANN_pi_plus'].reshape(1,-1)
 
 
-def PID(file_path, save_path, model_path, threshold=0, n_classes=3):
+    _=np.concatenate((mu_prbs,positron_prbs),axis=0)
+    prbs=np.concatenate((_,pi_prbs),axis=0)
+    prbs=np.transpose(prbs) # 0:mu+, 1: e+, 2: pi+.\
+
+
+    prbs_max=np.amax(prbs,axis=1)
+
+    particles=np.argmax(prbs,axis=1)
+
+    tags=prbs_max> threshold
+
+    num=len(prbs)
+
+    assert num == len(particles)
+
+    pid_results=np.where(tags,particles,-1*np.ones(num))
+
+    return pid_results
+
+
+def PID(file_path, save_path, model_path, n_classes=3):
     '''
     mu+: 0,
     e+: 1,
@@ -105,7 +130,7 @@ def PID(file_path, save_path, model_path, threshold=0, n_classes=3):
 
     pid_loader = loader.pid_data_loader(deposits)
 
-    tags = None
+    pid_prbs = None
 
     with torch.no_grad():
         net.eval()
@@ -116,30 +141,21 @@ def PID(file_path, save_path, model_path, threshold=0, n_classes=3):
 
             prbs = Softmax(dim=1)(outputs)
 
-            prbs, particles = torch.max(prbs, 1)
-
             if gpu:
                 prbs = prbs.cpu().numpy()
-                particles = particles.cpu().numpy()
+
             else:
                 prbs = prbs.numpy()
-                particles = particles.numpy()
-
-            batch_size = len(prbs)
-
-            tag_threshold = prbs > threshold
-
-            _ = np.where(tag_threshold, particles, -1 * np.ones(batch_size))
 
             if i == 0:
-                tags = _
+                pid_prbs = prbs
             else:
-                tags = np.concatenate((tags, _), axis=0)
+                pid_prbs = np.concatenate((pid_prbs, prbs), axis=0)
 
-    assert len(tags) == events_number
-    tags=tags.astype(np.int32)
+    assert len(pid_prbs) == events_number
+    pid_prbs=pid_prbs.astype(float)
 
-    array2tree(tags, save_path)
+    array2tree(pid_prbs, save_path)
 
 
 if __name__ == '__main__':
@@ -150,7 +166,6 @@ if __name__ == '__main__':
     parser.add_argument("--file_path", type=str, help="root file for PID.")
     parser.add_argument("--save_path", type=str, help="root file for saving PID results.")
     parser.add_argument("--model_path", type=str, help="ANN pid model path.")
-    parser.add_argument("--threshold", type=float, help="classification threshold, 0-1.")
     parser.add_argument("--n_classes", type=str, default=3, help="set n classes.")
     args = parser.parse_args()
 
@@ -158,7 +173,6 @@ if __name__ == '__main__':
         'file_path': args.file_path,
         'save_path': args.save_path,
         'model_path': args.model_path,
-        'threshold': args.threshold,
         'n_classes': args.n_classes,
     }
 
@@ -167,5 +181,7 @@ if __name__ == '__main__':
     tags=readPIDIndex(args.save_path)
 
     import matplotlib.pyplot as plt
-    plt.hist(tags,log=True)
-    plt.savefig('./test.png')
+
+    plt.hist(tags,log=False)
+    plt.title('-1: uncertain, 0:mu+, 1:e+, 2:pi+')
+    plt.savefig('/lustre/collider/songsiyuan/CEPC/PID/Calib/AHCAL_Run50_ANN_PID.png')
