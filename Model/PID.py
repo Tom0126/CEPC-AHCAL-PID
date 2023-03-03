@@ -170,5 +170,5 @@ if __name__ == '__main__':
     tags=readPIDIndex(args.save_path)
 
     import matplotlib.pyplot as plt
-    plt.hist(tags,log=True)
+    plt.hist(tags,log=False)
     plt.savefig('./test.png')
