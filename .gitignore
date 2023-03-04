@@ -9,3 +9,4 @@ test.py
 *__pycache__*
 *DS_Store*
 *.root*
+*log*
