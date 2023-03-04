@@ -5,7 +5,7 @@ import Combine
 import Split
 import os
 
-def makeLabels(mu_nums,e_nums,pi_nums,proton_nums,save_path):
+def makeLabels(mu_nums,e_nums,pi_nums,save_path):
     '''
 
     :param mu_nums:
@@ -21,10 +21,10 @@ def makeLabels(mu_nums,e_nums,pi_nums,proton_nums,save_path):
     mu_labels=np.zeros(mu_nums)
     e_labels=np.ones(e_nums)
     pi_labels=np.ones(pi_nums)*2
-    proton_labels=np.ones(proton_nums)*3
+
     labels=np.append(mu_labels,e_labels)
-    labels=np.append(labels,pi_labels)
-    labels=np.append(labels,proton_labels).astype(np.longlong)
+    labels=np.append(labels,pi_labels).astype(np.longlong)
+
     np.save(save_path,labels)
 
 def makeFinalDatasets(file_path_list,save_dir):
@@ -47,7 +47,7 @@ def makeFinalDatasets(file_path_list,save_dir):
     datasets_save_path=os.path.join(save_dir,'datasets.npy')
     labels_save_path=os.path.join(save_dir,'labels.npy')
     np.save(datasets_save_path, datasets)
-    makeLabels(mu_nums=data_length[0],e_nums=data_length[1],pi_nums=data_length[2],proton_nums=data_length[3],save_path=labels_save_path)
+    makeLabels(mu_nums=data_length[0],e_nums=data_length[1],pi_nums=data_length[2],save_path=labels_save_path)
 
 
 if __name__ == '__main__':
@@ -62,9 +62,9 @@ if __name__ == '__main__':
         'pi+':[100, 20, 40, 60, 80, 120, 30, 50, 70, 90],#[15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 110, 115, 125, 130],
 	'proton':[100, 20, 40, 60, 80, 120, 30, 50, 70, 90],#[15, 25, 35, 45, 55, 65, 75, 85, 95, 105, 110, 115, 125, 130],
     }
-    particles=['mu+','e+','pi+','proton']
+    particles=['mu+','e+','pi+']
     dirs = ['train', 'validation', 'test']
-    datasets_dir = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_proton'
+    datasets_dir = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_no_energy'
 
 
     if not os.path.exists(datasets_dir):
@@ -74,12 +74,13 @@ if __name__ == '__main__':
 
         # Combine
         #To DO
-        load_path = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/raw_data/ahcal_{}'.format(
-            particle) + '_{}GeV_2cm_{}k.npy'
+        load_path = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/raw_data/no_energy/ahcal_{}'.format(
+            particle) + '_{}GeV_2cm_no_energy.npy'
         save_dir = os.path.join(datasets_dir, particle)
         if not os.path.exists(save_dir):
             os.mkdir(save_dir)
-        save_path = os.path.join(save_dir, 'datasets.npy'.format(particle))
+
+        save_path = os.path.join(save_dir, 'datasets.npy')
         Combine.combineDatasets(name_lists=energy_points_dict.get(particle), shuffle=False, load_path=load_path,
                                 save_path=save_path)
         num=len(np.load(save_path))
@@ -98,8 +99,8 @@ if __name__ == '__main__':
     for i, dir in enumerate(dirs):
         file_path_list=[os.path.join(datasets_dir,'mu+/split/{}.npy'.format(i))
             ,os.path.join(datasets_dir,'e+/split/{}.npy'.format(i))
-            ,os.path.join(datasets_dir,'pi+/split/{}.npy'.format(i))
-            ,os.path.join(datasets_dir,'proton/split/{}.npy'.format(i))]
+            ,os.path.join(datasets_dir,'pi+/split/{}.npy'.format(i))]
+            # ,os.path.join(datasets_dir,'proton/split/{}.npy'.format(i))]
         save_dir=os.path.join(datasets_dir,dir)
         if not os.path.exists(save_dir):
             os.mkdir(save_dir)

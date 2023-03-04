@@ -26,7 +26,7 @@ def makeDatasets(file_path, save_path):
         assert num_events_ == len(y_)
         assert num_events_ == len(z_)
         for j in range(num_events_):
-            depoits[i, x_[j], y_[j], z_[j]] += energies_[j]
+            depoits[i, x_[j], y_[j], z_[j]] += 1
     # NCHW
     #depoits = np.transpose(depoits, (0, 3, 1, 2))
     np.save(save_path, depoits)
