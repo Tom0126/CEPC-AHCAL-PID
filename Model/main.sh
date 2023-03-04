@@ -10,10 +10,8 @@ conda activate pytorch
 n_epoch=3
 batch_size=32
 lr=0.001
-mean=0.07
-std=1.63
 optim='SGD'
 n_classes=4
 
-python /home/songsiyuan/CEPC/PID/Model/Train.py --n_epoch $n_epoch -b $batch_size -lr $lr --mean $mean --std $std --optim $optim --n_classes $n_classes
+python /home/songsiyuan/CEPC/PID/Model/Train.py --n_epoch $n_epoch -b $batch_size -lr $lr --optim $optim --n_classes $n_classes
 

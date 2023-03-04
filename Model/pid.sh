@@ -5,9 +5,9 @@
 source /sw/anaconda/3.8-2021.05/thisconda.sh
 conda activate pytorch
 
-file_path=/lustre/collider/songsiyuan/CEPC/PID/Calib/pi+/40GeV/AHCAL_Run58_20221021_184832.root
-save_path=/lustre/collider/songsiyuan/CEPC/PID/Calib/AHCAL_Run58_ANN_PID.root
-model_path=/lustre/collider/songsiyuan/CEPC/PID/CheckPoint/epoch_300/net.pth
+file_path=/lustre/collider/songsiyuan/CEPC/PID/Calib/mu+/AHCAL_Run102_20221023_114706.root
+save_path=/lustre/collider/songsiyuan/CEPC/PID/Calib/AHCAL_Run102_ANN_PID.root
+model_path=/lustre/collider/songsiyuan/CEPC/PID/CheckPoint/epoch_50_lr_0.001_batch_32_mean_0.07_std_1.62_optim_Adam/net.pth
 
 
 

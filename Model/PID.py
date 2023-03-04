@@ -184,4 +184,4 @@ if __name__ == '__main__':
 
     plt.hist(tags,log=False)
     plt.title('-1: uncertain, 0:mu+, 1:e+, 2:pi+')
-    plt.savefig('/lustre/collider/songsiyuan/CEPC/PID/Calib/AHCAL_Run50_ANN_PID.png')
+    plt.savefig('/lustre/collider/songsiyuan/CEPC/PID/Calib/pid_result.png')

@@ -11,15 +11,15 @@ class ImageSet(Dataset):
         super().__init__()
         datasets=np.load(img_path)
         labels=np.load(label_path)
-        datasets = datasets.astype(np.float32)
+        self.datasets = datasets.astype(np.float32)
         # use the mean&std of the train set
-        if mean_std_static:
-            mean=mean
-            std=std
-        else:
-            mean = np.average(datasets)
-            std = np.std(datasets)
-        self.datasets = (datasets-mean)/std
+        # if mean_std_static:
+        #     mean=mean
+        #     std=std
+        # else:
+        #     mean = np.average(datasets)
+        #     std = np.std(datasets)
+        # self.datasets = (datasets-mean)/std
         self.labels = labels
         self.transform = transform
     

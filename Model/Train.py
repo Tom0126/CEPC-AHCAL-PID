@@ -55,7 +55,7 @@ N_CLASSES=args.n_classes
 data_dir_dict={4:'/ahcal_beam_test_mu_e_pi_proton',
            3:'ahcal_testbeam_simu',
           }
-net_name = 'epoch_{}_lr_{}_batch_{}_mean_{}_std_{}_optim_{}_classes_{}'.format(MAX_EPOCH, LR, BATCH_SIZE, MEAN, STD, OPTIM, N_CLASSES)
+net_name = 'epoch_{}_lr_{}_batch_{}_optim_{}_classes_{}'.format(MAX_EPOCH, LR, BATCH_SIZE, OPTIM, N_CLASSES)
 
 root_path = '/home/songsiyuan/CEPC/PID/Model'  # train.py's dir
 data_path = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets'

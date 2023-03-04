@@ -4,8 +4,7 @@ lr=0.000001
 optim=('SGD' 'Adam')
 batch=(512 128 32)
 epoch=(50)
-mean=(0.06 0.07 0.08)
-std=(1.62 1.63 1.64)
+
 
 
 
@@ -25,11 +24,7 @@ do
 for((m=0;m<${#optim[@]};m++))
 do
 
-for((n=0;n<${#mean[@]};n++))
-do
 
-for((l=0;l<${#std[@]};l++))
-do
 
   cp main.sh scripts/main_$num.sh
   cp a100_train.sub scripts/a100_train_$num.sub
@@ -39,16 +34,12 @@ do
   sed -i 10cn_epoch\=${epoch[j]} scripts/main_$num.sh
   sed -i 11cbatch_size\=${batch[k]} scripts/main_$num.sh
   sed -i 12clr\=$lr scripts/main_$num.sh
-  sed -i 13cmean\=${mean[n]} scripts/main_$num.sh
-  sed -i 14cstd\=${std[l]} scripts/main_$num.sh
-  sed -i 15coptim\=${optim[m]} scripts/main_$num.sh
+  sed -i 13coptim\=${optim[m]} scripts/main_$num.sh
 
   condor_submit scripts/a100_train_$num.sub
 
   num=`expr $num + 1`
 
-done
-done
 done
 done
 done
