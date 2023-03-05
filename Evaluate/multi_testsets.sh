@@ -6,6 +6,7 @@ source /cvmfs/sft.cern.ch/lcg/views/LCG_101cuda/x86_64-centos7-gcc8-opt/setup.sh
 
 energy_point=100
 
+
 python /home/songsiyuan/CEPC/PID/Evaluate/MakeFinalDataset.py --ep $energy_point
 #python MakeTrainsets.py
 #python Test.py

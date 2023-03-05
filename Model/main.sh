@@ -11,7 +11,7 @@ n_epoch=3
 batch_size=32
 lr=0.001
 optim='SGD'
-n_classes=4
+n_classes=3
 
 python /home/songsiyuan/CEPC/PID/Model/Train.py --n_epoch $n_epoch -b $batch_size -lr $lr --optim $optim --n_classes $n_classes
 

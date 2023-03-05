@@ -9,6 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 # base setting
 parser.add_argument("--ep", type=str, default=None, help="energy point")
+parser.add_argument("--p_type", type=str, help="particle type")
 args=parser.parse_args()
 
 def makeLabels(mu_nums,e_nums,pi_nums,save_path):
@@ -27,7 +28,7 @@ def makeLabels(mu_nums,e_nums,pi_nums,save_path):
     mu_labels=np.zeros(mu_nums)
     e_labels=np.ones(e_nums)
     pi_labels=np.ones(pi_nums)*2
-    proton_labels=np.ones(proton_nums)*3
+    # proton_labels=np.ones(proton_nums)*3
     labels=np.append(mu_labels,e_labels)
     labels=np.append(labels,pi_labels).astype(np.longlong)
     np.save(save_path,labels)
@@ -35,7 +36,7 @@ def makeLabels(mu_nums,e_nums,pi_nums,save_path):
 def makeFinalDatasets(file_path,label,save_dir,save_name):
     '''
 
-    :param file_path_list: order should be mu, e+, pion
+    param file_path_list: order should be mu, e+, pion
     :param shuffle:
     :param save_dir:
     :return:
@@ -58,11 +59,11 @@ if __name__ == '__main__':
                 'pi+':2,
                 'proton':3}
 
-    particle = 'proton'
+    particle = 'mu+'
 
 
-    file_path='/lustre/collider/songsiyuan/CEPC/PID/Trainsets/raw_data/ahcal_{}_{}GeV_2cm_10k.npy'.format(particle,args.ep)
-    save_dir='/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_testbeam_seperate_testsets/ahcal_{}_{}GeV_2cm_10k'.format(particle,args.ep)
+    file_path='/lustre/collider/songsiyuan/CEPC/PID/Trainsets/raw_data/no_energy/ahcal_{}_{}GeV_2cm_no_energy.npy'.format(particle,args.ep)
+    save_dir='/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_no_energy_seperate/ahcal_{}_{}GeV_2cm_no_energy'.format(particle,args.ep)
 
     label=label_dict.get(particle)
     if not os.path.exists(save_dir):

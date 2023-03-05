@@ -3,7 +3,7 @@
 lr=0.000001
 optim=('SGD' 'Adam')
 batch=(512 128 32)
-epoch=(50)
+epoch=(50 100)
 
 
 

@@ -148,7 +148,7 @@ def evaluate(root_path, mean, std, n_classes):
     save_extra_path = os.path.join(save_extra_dir, '{}.npy')  # store accuracy
 
     # combination
-    combin_datasets_dir_dict={3:'/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_testbeam_simu/test',
+    combin_datasets_dir_dict={3:'/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_no_energy/test',
                               4:'/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_proton/test',
                               }
     combin_datasets_dir = combin_datasets_dir_dict.get(n_classes)
@@ -156,13 +156,13 @@ def evaluate(root_path, mean, std, n_classes):
     combin_labels_path = os.path.join(combin_datasets_dir, 'labels.npy')
 
     # seperate energy points
-    sep_datasets_dir = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_testbeam_seperate_testsets'
-    sep_e_pi_proton_datasets_path = os.path.join(sep_datasets_dir, 'ahcal_{}_{}GeV_2cm_10k/imgs.npy')
-    sep_e_pi_proton_labels_path = os.path.join(sep_datasets_dir, 'ahcal_{}_{}GeV_2cm_10k/labels.npy')
+    sep_datasets_dir = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_no_energy_seperate'
+    sep_e_pi_proton_datasets_path = os.path.join(sep_datasets_dir, 'ahcal_{}_{}GeV_2cm_no_energy/datasets.npy')
+    sep_e_pi_proton_labels_path = os.path.join(sep_datasets_dir, 'ahcal_{}_{}GeV_2cm_no_energy/labels.npy')
     sep_e_pi_proton_energy_points = sorted([20, 30, 40, 50, 60, 70, 80, 90, 100, 120])
 
-    sep_mu_datasets_path = os.path.join(sep_datasets_dir, 'ahcal_{}_{}GeV_2cm_10k/imgs.npy')
-    sep_mu_labels_path = os.path.join(sep_datasets_dir, 'ahcal_{}_{}GeV_2cm_10k/labels.npy')
+    sep_mu_datasets_path = os.path.join(sep_datasets_dir, 'ahcal_{}_{}GeV_2cm_no_energy/datasets.npy')
+    sep_mu_labels_path = os.path.join(sep_datasets_dir, 'ahcal_{}_{}GeV_2cm_no_energy/labels.npy')
     sep_mu_energy_points = sorted([160])
 
     # extra energy points
@@ -181,8 +181,8 @@ def evaluate(root_path, mean, std, n_classes):
         os.mkdir(save_dis_dir)
     save_dis_path = os.path.join(save_dis_dir, '{}_dis.npy')
 
-    dis_datasets_path = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_proton/{}/datasets.npy'
-    dis_labels_path = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_proton/{}/labels.npy'
+    dis_datasets_path = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_no_energy/{}/datasets.npy'
+    dis_labels_path = '/lustre/collider/songsiyuan/CEPC/PID/Trainsets/ahcal_beam_test_mu_e_pi_no_energy/{}/labels.npy'
 
     # roc
 
@@ -347,8 +347,18 @@ def evaluate(root_path, mean, std, n_classes):
 if __name__ == '__main__':
     args = parser.parse_args()
     # load model
-    root_path = '/lustre/collider/songsiyuan/CEPC/PID/CheckPoint/epoch_300'
-    N_CLASSES = 3
-    mean=args.mean
-    std=args.std
-    evaluate(root_path=root_path, n_classes=N_CLASSES,mean=mean,std=std)
+    MAX_EPOCH = args.n_epoch
+    BATCH_SIZE = args.batch_size
+    LR = args.learning_rate
+    log_interval = args.log_interval
+    val_interval = args.val_interval
+    NUM_WORKERS = args.num_workers
+    MEAN = args.mean
+    STD = args.std
+    OPTIM = args.optim
+    N_CLASSES = args.n_classes
+
+    net_name = 'epoch_{}_lr_{}_batch_{}_optim_{}_classes_{}_no_energy'.format(MAX_EPOCH, LR, BATCH_SIZE, OPTIM, N_CLASSES)
+    ckp_dir = os.path.join('/lustre/collider/songsiyuan/CEPC/PID/CheckPoint/',net_name)
+
+    evaluate(root_path=ckp_dir, n_classes=N_CLASSES,mean=MEAN,std=STD)
