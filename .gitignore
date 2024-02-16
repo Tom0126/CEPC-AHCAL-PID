@@ -22,5 +22,6 @@ Model/ANA/*.sh*
 *.sub*
 CheckPoint/
 ShowerTopology/*.sh*
-*.npy*
 *.pth*
+*describe.py*
+*.txt*
