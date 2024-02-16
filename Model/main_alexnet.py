@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
 
     data_dir_dict = {
-        2: '../data/ihep_mc/tutorial',
+        2: '../data/ihep_mc/dummy_data',
     }
     eval_datasets_dir_dict = {
         2: os.path.join(data_dir_dict.get(args.n_classes), 'Validation'),
