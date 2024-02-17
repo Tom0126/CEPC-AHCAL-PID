@@ -1,8 +1,8 @@
 #! /bin/bash
 
 
-source #<AN ENV You>
-conda activate #<ENV>
+source #<AN ENV>
+conda activate #<ENV NAME>
 
 # change hyper-parameters
 
