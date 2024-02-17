@@ -5,9 +5,12 @@ This project is run in Python 3.8, Pytorch-cuda=11.7. Be careful that to run the
 
 
     
-1. Train Model
+Train Model
   
         cd Model
+  1. Choose the model, e.g. resnet. 
+        vi train_<model_name>.sh
+  2. set up your environment
         source train_<model_name>.sh
   
    
