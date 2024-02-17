@@ -3,7 +3,7 @@ Particle Identification Using Artificial Neural Network. This net is trained on 
 
 This project is run in Python 3.8, Pytorch-cuda=11.7. We recommend you build your virtual environment using Miniconda.
     
-Train Model
+A. Train Model
         
   1. Choose the model, e.g. resnet.
      
